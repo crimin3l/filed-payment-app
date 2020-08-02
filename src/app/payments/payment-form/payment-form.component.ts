@@ -71,11 +71,11 @@ export class PaymentFormComponent implements OnInit, OnDestroy {
   }
 
   get amount(): FormControl {
-    return this.paymentForm.get('creditCardNumber') as FormControl;
+    return this.paymentForm.get('amount') as FormControl;
   }
 
   get expirationDate(): FormControl {
-    return this.paymentForm.get('creditCardNumber') as FormControl;
+    return this.paymentForm.get('expirationDate') as FormControl;
   }
 
   // onClick handler
