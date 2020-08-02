@@ -1,17 +1,26 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError } from 'rxjs/operators';
 import { CreditCardPayment } from '../model/creditCardPayment/creditCardPayment';
 
+import { AppConfig } from '../../app.module';
+import { APP_DI_CONFIG } from 'src/app/app-config.module';
 
 @Injectable({ providedIn: 'root', })
 export class PaymentService {
-    private paymentUrl = 'http://localhost:9000/addCreditCard';
-    constructor(private http: HttpClient) { }
+    constructor(
+        private http: HttpClient,
+
+        @Inject
+        (AppConfig) private config: AppConfig,
+        ) {}
 
     makePayment(dataObject: CreditCardPayment): Observable<CreditCardPayment> {
-        console.log("starting call");
+        console.log(this.config.apiEndpoint);
+        const employeeString = APP_DI_CONFIG.apiEndpoint
+        console.log("starting call to peyment endpoint with the following dataObject: ");
+        console.log(JSON.parse(JSON.stringify(dataObject)));
         const headers = new HttpHeaders();
         headers.append('Content-Type', 'application/json');
 
@@ -19,10 +28,10 @@ export class PaymentService {
             headers
         };
 
-        return this.http.post<CreditCardPayment>(this.paymentUrl, dataObject, options)
+        return this.http.post<CreditCardPayment>(employeeString, dataObject, options)
             .pipe(
-                retry(3), // retry a failed request up to 3 times
-                catchError(this.handleError) // then handle the error
+                retry(3), 
+                catchError(this.handleError) 
             );
     }
 

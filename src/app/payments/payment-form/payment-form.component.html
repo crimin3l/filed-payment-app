@@ -1,22 +1,25 @@
 <div class="container .container-fluid" style="margin-top: 2em">
-
     <div class="row align-items-center jumbotron  ">
         <div class="col-sm">
         </div>
         <div class="col-md-6 ">
-            <form [formGroup]="paymentForm" autocomplete="off" (ngSubmit)="submitPayment()">
+
+            <form [formGroup]="paymentForm" (ngSubmit)="submitPayment()">
 
                 <div class="form-group">
                     <label>Creditcard Number:</label>
                     <input class="form-control ng-untouched ng-pristine ng-valid" type="text" autocomplete="off"
-                        formControlName="creditCardNumber" placeholder="XXXXXXXXXXXXXXXX" numbersOnly with-whitespaces>
-                    <div class="small alert alert-danger error" *ngIf="paymentForm.get('creditCardNumber').touched && 
-                            paymentForm.get('creditCardNumber').hasError('required')">
+                        formControlName="creditCardNumber" placeholder="XXXX XXXX XXXX XXXX" numbersOnly
+                        with-whitespaces>
+                    <div class="small alert alert-danger error" *ngIf="
+                            creditCardNumber.touched && 
+                            creditCardNumber.hasError('required')">
                         creditCardNumber is required
                     </div>
-                    <div class="small alert alert-danger error" *ngIf="paymentForm.get('creditCardNumber').touched && 
-                                !paymentForm.controls.creditCardNumber.valid && 
-                                !paymentForm.get('creditCardNumber').hasError('required')">
+                    <div class="small alert alert-danger error" *ngIf="
+                            paymentForm.get('creditCardNumber').touched && 
+                            !creditCardNumber.valid && 
+                            !creditCardNumber.hasError('required')">
                         creditCardNumber is invalid
                     </div>
                 </div>
@@ -24,63 +27,72 @@
                 <div class="form-group">
                     <label>Cardholder:</label>
                     <input class="form-control ng-untouched ng-pristine ng-valid" type="text"
-                        formControlName="cardholder" placeholder="Firstname Lastname"
+                        formControlName="cardholder" placeholder="FIRSTNAME LASTNAME"
                         oninput="this.value = this.value.toUpperCase()">
-                    <div class="small alert alert-danger error" *ngIf="paymentForm.get('cardholder').touched && 
-                        paymentForm.get('cardholder').hasError('required')">
+                    <div class="small alert alert-danger error" *ngIf="
+                            cardholder.touched && 
+                            cardholder.hasError('required')">
                         cardholder is required
                     </div>
                     <div class="small alert alert-danger error" *ngIf="
-                                paymentForm.get('cardholder').touched && 
-                                !paymentForm.controls.cardholder.valid && 
-                                !paymentForm.get('cardholder').hasError('required')">
+                            cardholder.touched && 
+                            !cardholder.valid && 
+                            !cardholder.hasError('required')">
                         cardholder is invalid
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Expiration date:</label>
-                    <input class="form-control ng-untouched ng-pristine ng-valid" type="Month"
-                        formControlName="expirationDate" pattern="[0-9]{4}-[0-9]{2}" placeholder="YYYY-MM">
+                    <input class="form-control ng-untouched ng-pristine ng-valid" type="Month" autocomplete="off"
+                        formControlName="expirationDate" placeholder="YYYY-MM" pattern="[0-9]{4}-[0-9]{2}">
                     <!-- In case the browser does not support Month input type, it will automatically fall back to text input type as in the line below-->
-                    <!-- <input type="text" formControlName="expirationDate" pattern="[0-9]{4}-[0-9]{2}" placeholder="YYYY-MM">-->
-                    <div class="small alert alert-danger error" *ngIf="paymentForm.get('expirationDate').touched && 
-                            paymentForm.get('expirationDate').hasError('required')">
+                    <!-- <input  class="form-control ng-untouched ng-pristine ng-valid" type="text" autocomplete="off" formControlName="expirationDate" pattern="[0-9]{4}-[0-9]{2}" placeholder="YYYY-MM">-->
+                    <div class="small alert alert-danger error" *ngIf="
+                            expirationDate.touched && 
+                            expirationDate.hasError('required')">
                         expirationDate is required
                     </div>
-                    <div class="small alert alert-danger error" *ngIf="paymentForm.get('expirationDate').touched && 
-                            !paymentForm.controls.expirationDate.valid && 
-                            !paymentForm.get('expirationDate').hasError('required')">
+                    <div class="small alert alert-danger error" *ngIf="
+                            expirationDate.touched && 
+                            !expirationDate.valid && 
+                            !expirationDate.hasError('required')">
                         invalid expiration date
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Security Code:</label>
-                    <input class="form-control ng-untouched ng-pristine ng-valid" type="password" maxlength="3"
-                        minlength="3" formControlName="securityCode" placeholder="XXX" numbersOnly pattern="[0-9]{3}">
-                    <div class="small alert alert-danger error" *ngIf="paymentForm.get('securityCode').touched && 
-                            !paymentForm.controls.securityCode.valid ">
+                    <input class="form-control ng-untouched ng-pristine ng-valid" type="password" autocomplete="off"
+                        formControlName="securityCode" placeholder="XXX" pattern="[0-9]{3}" maxlength="3" minlength="3"
+                        numbersOnly>
+                    <div class="small alert alert-danger error" *ngIf="
+                            securityCode.touched && 
+                            !securityCode.valid ">
                         securityCode is invalid
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Amount:</label>
-                    <input class="form-control ng-untouched ng-pristine ng-valid" type="number" min="0"
-                        formControlName="amount">
-                    <div class="small alert alert-danger error" *ngIf="paymentForm.get('amount').touched && 
-                            paymentForm.get('amount').hasError('required')">
+                    <input class="form-control ng-untouched ng-pristine ng-valid" type="number" formControlName="amount"
+                        min="0" numbersOnly>
+                    <div class="small alert alert-danger error" *ngIf="
+                            amount.touched && 
+                            amount.hasError('required')">
                         amount is required
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <button class="btn-large btn-block btn-primary" type="submit" [disabled]="!paymentForm.valid"
-                        (click)="onClickCollectData()">Submit</button>
+                    <button class="btn-large btn-block btn-primary" type="submit"
+                        [disabled]="!paymentForm.valid || isSubmiting" (click)="onClickCollectData()">
+                        Submit
+                    </button>
                 </div>
 
             </form>
+
         </div>
         <div class="col-sm">
         </div>

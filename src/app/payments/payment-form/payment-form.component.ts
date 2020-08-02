@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
+import { FormGroup, Validators, FormBuilder, AbstractControl, FormControl } from '@angular/forms';
 import { PaymentService } from '../paymentService/payment.service';
 import { expirationDateValidator } from '../shared/payment-form-validators';
 import { creditCardNumberValidator } from '../shared/payment-form-validators';
@@ -14,12 +14,15 @@ import { Subscription } from 'rxjs';
 })
 
 export class PaymentFormComponent implements OnInit, OnDestroy {
-  creditCardPayment: CreditCardPayment = new CreditCardPayment();
+  creditCardPayment = new CreditCardPayment();
   paymentForm: FormGroup;
+
   private paymentSubscription: Subscription;
+  isSubmiting: boolean;
+
   constructor(
     private formBuilder: FormBuilder,
-    private paymentService: PaymentService
+    private paymentService: PaymentService,
   ) { }
 
   ngOnInit(): void {
@@ -43,41 +46,64 @@ export class PaymentFormComponent implements OnInit, OnDestroy {
         ]],
         amount: ['', Validators.required]
       },
-      {   // this can also be validated once for all the form using a custom validator here
+      { // this can also be validated once for all the form using a custom validator here
         // validator: paymentFormValidator()
       }
     );
   }
 
   ngOnDestroy(): void {
-    this.paymentSubscription.unsubscribe();
+    if (this.paymentSubscription) {
+      this.paymentSubscription.unsubscribe();
+    }
   }
-  onClickCollectData(): boolean {
 
-    // this is the onclick handler, we can use this to collect the data from the form and populate the DTO
-    this.creditCardPayment.setCreditCardNumber(this.paymentForm.get('creditCardNumber').value);
-    this.creditCardPayment.setCardholder(this.paymentForm.get('cardholder').value);
-    this.creditCardPayment.setSecurityCode(this.paymentForm.get('securityCode').value);
-    this.creditCardPayment.setAmount(this.paymentForm.get('amount').value);
-    this.creditCardPayment.setExpirationDate(computeExpirationDate(this.paymentForm.get('expirationDate').value));
+  get creditCardNumber(): FormControl {
+    return this.paymentForm.get('creditCardNumber') as FormControl;
+  }
+
+  get cardholder(): FormControl {
+    return this.paymentForm.get('cardholder') as FormControl;
+  }
+
+  get securityCode(): FormControl {
+    return this.paymentForm.get('securityCode') as FormControl;
+  }
+
+  get amount(): FormControl {
+    return this.paymentForm.get('creditCardNumber') as FormControl;
+  }
+
+  get expirationDate(): FormControl {
+    return this.paymentForm.get('creditCardNumber') as FormControl;
+  }
+
+  // onClick handler
+  onClickCollectData(): boolean {
+    this.creditCardPayment.setCreditCardNumber(this.creditCardNumber.value);
+    this.creditCardPayment.setCardholder(this.cardholder.value);
+    this.creditCardPayment.setSecurityCode(this.securityCode.value);
+    this.creditCardPayment.setAmount(this.amount.value);
+    this.creditCardPayment.setExpirationDate(computeExpirationDate(this.expirationDate.value));
     return true;
     // in case we encounter any blocking issues we can suspend the firing of onSubmit handler by returning false
   }
 
+  // onSubmit handler
   submitPayment(): void {
-    // this handler gets executed after the completion of the onClick event
-    // we can use this to subscribe to the payment service and submit the payment
+    this.isSubmiting = true;
     this.paymentSubscription = this.paymentService.makePayment(this.creditCardPayment)
-      .subscribe(() => {
-      },
+      .subscribe(
+        () => {
+          this.isSubmiting = false;
+        },
         error => {
           console.log(error);
         },
-        () => {
-          console.log('completed');
-        }
       );
-    console.log('model-based form submitted');
+    this.paymentForm.reset();
+    this.creditCardNumber.clearValidators();
+    this.creditCardNumber.updateValueAndValidity();
   }
 
 }

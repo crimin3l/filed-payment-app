@@ -8,6 +8,8 @@ import { PaymentPageComponent } from './payment-page/payment-page.component';
 import { PaymentFormComponent } from './payment-form/payment-form.component';
 import { NumberDirective } from '../payments/shared/numbers-only.directive';
 import { CreditCardNumberWhitespacerDirective } from '../payments/shared/creditCardNumberWhitespacer.directive';
+import { AppConfigModule } from '../app-config.module';
+
 
 @NgModule({
   declarations: [
@@ -18,7 +20,8 @@ import { CreditCardNumberWhitespacerDirective } from '../payments/shared/creditC
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    AppConfigModule
   ],
   exports: [
     CommonModule,
